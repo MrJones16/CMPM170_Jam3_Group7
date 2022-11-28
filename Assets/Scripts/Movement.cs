@@ -49,21 +49,30 @@ public class Movement : MonoBehaviour
         //first, get the tile position we are trying to check
         int tileX = (int)this.transform.position.x + xdir;
         int tileY = (int)this.transform.position.y + ydir;
+
+        //do the same thing but for the surface tilemap
+        Tile surfaceTile = surface.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(tileX, tileY, 0));
+        if (surfaceTile != null){
+            if (surfaceTile.colliderType != Tile.ColliderType.None){
+                //if there is any kind of collider on the tile, return false / cant move
+                Debug.Log("Surface tile in the way!  collidertype: " + surfaceTile.colliderType);
+                return false;
+            }
+        }
+
         //get the tile from the ground tilemap
         Tile groundTile = ground.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(tileX, tileY, 0));
         //check if the ground tilemap has a collider. This would be for mountains or pits
-        if (groundTile.colliderType != Tile.ColliderType.None){
-            //if there is any kind of collider on the tile, return false / cant move
-            return false;
+        if (groundTile != null){
+            if (groundTile.colliderType != Tile.ColliderType.None){
+                //if there is any kind of collider on the tile, return false / cant move
+                Debug.Log("Ground tile collider in the way! collidertype: " + groundTile.colliderType);
+                return false;
+            }
         }
-        //do the same thing but for the surface tilemap
-        Tile surfaceTile = surface.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(tileX, tileY, 0));
-        if (surfaceTile.colliderType != Tile.ColliderType.None){
-            //if there is any kind of collider on the tile, return false / cant move
-            return false;
-        }
+        
         //since the tile is free to move on, move the gameobject!
         this.transform.position += new Vector3(xdir, ydir, 0);
-        return false;
+        return true;
     }
 }
