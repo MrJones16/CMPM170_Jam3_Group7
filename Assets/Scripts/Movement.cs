@@ -29,9 +29,12 @@ public class Movement : MonoBehaviour
 {
     Tilemap ground;
     Tilemap surface;
+    GameHandler gameHandler;
     private void Start() {
+        gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
         ground = GameObject.Find("Tilemap_Ground").GetComponent<Tilemap>();
         surface = GameObject.Find("Tilemap_Surface").GetComponent<Tilemap>();
+        gameHandler.addGameObject(this.gameObject);
     }
     public bool MoveUp(){
         return move(0, 1);
@@ -50,14 +53,9 @@ public class Movement : MonoBehaviour
         int tileX = (int)this.transform.position.x + xdir;
         int tileY = (int)this.transform.position.y + ydir;
 
-        //do the same thing but for the surface tilemap
-        Tile surfaceTile = surface.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(tileX, tileY, 0));
-        if (surfaceTile != null){
-            if (surfaceTile.colliderType != Tile.ColliderType.None){
-                //if there is any kind of collider on the tile, return false / cant move
-                Debug.Log("Surface tile in the way!  collidertype: " + surfaceTile.colliderType);
-                return false;
-            }
+        //check for other gameobjects in the way
+        if (gameHandler.GetGameObject(tileX, tileY) != null){
+            return false;
         }
 
         //get the tile from the ground tilemap
@@ -67,6 +65,16 @@ public class Movement : MonoBehaviour
             if (groundTile.colliderType != Tile.ColliderType.None){
                 //if there is any kind of collider on the tile, return false / cant move
                 Debug.Log("Ground tile collider in the way! collidertype: " + groundTile.colliderType);
+                return false;
+            }
+        }
+
+        //do the same thing but for the surface tilemap
+        Tile surfaceTile = surface.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(tileX, tileY, 0));
+        if (surfaceTile != null){
+            if (surfaceTile.colliderType != Tile.ColliderType.None){
+                //if there is any kind of collider on the tile, return false / cant move
+                Debug.Log("Surface tile in the way!  collidertype: " + surfaceTile.colliderType);
                 return false;
             }
         }
