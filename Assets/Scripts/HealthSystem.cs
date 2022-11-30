@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class HealthSystem : MonoBehaviour
 {
@@ -16,41 +18,48 @@ public class HealthSystem : MonoBehaviour
     private void Start()
     {
         currentHealth = maxHealth;
-        reduceHP = GameObject.Find("ReduceHealth");
-        applyHP = GameObject.Find("ApplyHealth");
     }
  
  
      public void OnCollisionEnter2D(Collision2D collisionInfo)
     {
-        if (collisionInfo.collider.name == "ApplyHealth")
+        if (collisionInfo.gameObject.tag == "ApplyHealth")
         {
-            ApplyHealing();
-            Destroy(applyHP);
+            ChangeHealth(1);
+            Destroy(collisionInfo.gameObject);
         }
  
-        if(collisionInfo.collider.name == "ReduceHealth")
+        if(collisionInfo.gameObject.tag == "ReduceHealth")
         {
-            DamageHealth();
-            Destroy(reduceHP);
+            ChangeHealth(-2);
+            Destroy(collisionInfo.gameObject);
+
         }
 
         Debug.Log("Current Health: " + currentHealth);
     }
- 
-    void ApplyHealing()
-    {
-        if (currentHealth < maxHealth)
-        {
-            currentHealth += healing;
+
+    public void ChangeHealth(int value){
+        
+        if(currentHealth <= maxHealth && currentHealth > 0){
+            // do not add health when currentHealth == maxHealth
+            if(value >= 0 && currentHealth == maxHealth){
+                return;
+            }
+
+            currentHealth += value;
         }
-    }
- 
-    public void DamageHealth()
-    {
-        if (currentHealth > 0)
-        {
-            currentHealth -= damage;
+
+        // set currentHealth to maxHealth when current out of bound after applying health
+        if(currentHealth > maxHealth){
+            currentHealth = maxHealth;
+        }
+
+        // if current health <= 0 after damage health, restart the game
+        if(currentHealth <= 0){
+            Scene scene = SceneManager.GetActiveScene(); 
+            SceneManager.LoadScene(scene.name);
+
         }
     }
 }
