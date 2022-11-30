@@ -5,7 +5,7 @@ using System;
 
 public class GameHandler : MonoBehaviour
 {
-    List<GameObject> gameObjects;
+    public List<GameObject> gameObjects;
     public void addGameObject(GameObject item){
         if (gameObjects == null){
             gameObjects = new List<GameObject>();
