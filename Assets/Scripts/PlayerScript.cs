@@ -23,6 +23,7 @@ public class PlayerScript : MonoBehaviour
     public HealthSystem playerHealth = new HealthSystem();
     public Movement playerMove;
     public bool PlayerTurn = false;
+    public bool tempBool;
     public const int actionMax = 5;
     public int actionsLeft = 5;
     // Update is called once per frame
@@ -40,23 +41,23 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                playerMove.MoveUp();
-                actionsLeft--;
+                tempBool = playerMove.MoveUp(transform.position);
+                if(tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
-                playerMove.MoveLeft();
-                actionsLeft--;
+                tempBool = playerMove.MoveLeft(transform.position);
+                if (tempBool) actionsLeft--; 
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
-                playerMove.MoveRight();
-                actionsLeft--;
+                tempBool = playerMove.MoveRight(transform.position);
+                if (tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                playerMove.MoveDown();
-                actionsLeft--;
+                tempBool = playerMove.MoveDown(transform.position);
+                if (tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.Escape)) break;
         }
