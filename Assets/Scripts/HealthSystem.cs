@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class HealthSystem : MonoBehaviour
 {
     public float maxHealth;
@@ -32,11 +33,11 @@ public class HealthSystem : MonoBehaviour
         {
             ChangeHealth(-2);
             Destroy(collisionInfo.gameObject);
+
         }
 
         Debug.Log("Current Health: " + currentHealth);
     }
- 
 
     public void ChangeHealth(int value){
         
@@ -58,6 +59,7 @@ public class HealthSystem : MonoBehaviour
         if(currentHealth <= 0){
             Scene scene = SceneManager.GetActiveScene(); 
             SceneManager.LoadScene(scene.name);
+
         }
     }
 }
