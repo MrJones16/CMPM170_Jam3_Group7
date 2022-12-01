@@ -8,7 +8,7 @@ using UnityEngine;
     [x] Make a script that will be attatched to the player, 
     and this script will use the movement script to move. 
     
-    [x] This script should also tell the game handler’s turn based 
+    [x] This script should also tell the game handlerï¿½s turn based 
     system when the player is finished with their turn
 
     [] The player should be able to interact with things, so you should 
@@ -41,22 +41,22 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                tempBool = playerMove.MoveUp(transform.position);
+                tempBool = playerMove.MoveUp();
                 if(tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
-                tempBool = playerMove.MoveLeft(transform.position);
+                tempBool = playerMove.MoveLeft();
                 if (tempBool) actionsLeft--; 
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
-                tempBool = playerMove.MoveRight(transform.position);
+                tempBool = playerMove.MoveRight();
                 if (tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                tempBool = playerMove.MoveDown(transform.position);
+                tempBool = playerMove.MoveDown();
                 if (tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.Escape)) break;
