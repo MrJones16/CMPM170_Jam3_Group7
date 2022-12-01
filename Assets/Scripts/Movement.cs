@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
 
 // HARD
 // Programmer: Puyi, Peyton, David C.
@@ -83,4 +85,5 @@ public class Movement : MonoBehaviour
         this.transform.position += new Vector3(xdir, ydir, 0);
         return true;
     }
+    
 }
