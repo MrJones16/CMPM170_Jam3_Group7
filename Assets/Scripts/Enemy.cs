@@ -26,8 +26,12 @@ public class Enemy : MonoBehaviour
     //want a health script
     public string enemyType = "Melee";
     public int damage = 5;
+    public int actions = 10;
     private void Start() {
-        movement = new Movement();
+        movement = this.gameObject.GetComponent<Movement>();
+        if (movement == null){
+            movement = this.gameObject.AddComponent<Movement>();
+        }
         gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
     }
     public void TakeTurn(){
@@ -51,5 +55,29 @@ public class Enemy : MonoBehaviour
                 Debug.Log("Didn't specify an enemy type! Types: Melee, Ranger, Mage");
                 break;
         }
+    }
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.A)){
+            if(movement.MoveLeft()){
+
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.S)){
+            if(movement.MoveDown()){
+
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.D)){
+            if(movement.MoveRight()){
+
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.W)){
+            if(movement.MoveUp()){
+
+            }
+        }
+
+
     }
 }
