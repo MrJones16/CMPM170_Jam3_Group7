@@ -41,22 +41,22 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                tempBool = playerMove.MoveUp(transform.position);
+                tempBool = playerMove.MoveUp();
                 if(tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
-                tempBool = playerMove.MoveLeft(transform.position);
+                tempBool = playerMove.MoveLeft();
                 if (tempBool) actionsLeft--; 
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
-                tempBool = playerMove.MoveRight(transform.position);
+                tempBool = playerMove.MoveRight();
                 if (tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                tempBool = playerMove.MoveDown(transform.position);
+                tempBool = playerMove.MoveDown();
                 if (tempBool) actionsLeft--;
             }
             if (Input.GetKeyDown(KeyCode.Escape)) break;
