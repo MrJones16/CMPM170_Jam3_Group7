@@ -7,7 +7,7 @@ using System;
 public class ItemRoot : MonoBehaviour
 {
     byte quantity;
-    private string name;
+    private string itemName;
     
     public string getName()
     {
