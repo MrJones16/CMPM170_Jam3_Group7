@@ -8,7 +8,7 @@ using UnityEngine;
     [x] Make a script that will be attatched to the player, 
     and this script will use the movement script to move. 
     
-    [x] This script should also tell the game handler’s turn based 
+    [x] This script should also tell the game handlerâ€™s turn based 
     system when the player is finished with their turn
 
     [] The player should be able to interact with things, so you should 
@@ -46,6 +46,7 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.W))
             {
                 tempBool = playerMove.MoveUp();
+
                 if (tempBool) 
                 {
                     meleeTragets = playerScan.scanMelee(this.transform.position);
@@ -66,6 +67,7 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.D))
             {
                 tempBool = playerMove.MoveRight();
+
                 if (tempBool) {
                     meleeTragets = playerScan.scanMelee(this.transform.position);
                     rangedTragets = playerScan.scanRanged(this.transform.position);
