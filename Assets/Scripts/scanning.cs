@@ -8,69 +8,98 @@ public class scanning : MonoBehaviour
     UnityEngine.Tilemaps.Tile tempTile;
     GameObject tileTop;
     GameHandler scanHand;
-    List<GameObject> meleeTargets;
-    List<GameObject> rangedTargets;
+    public List<GameObject> meleeTargets;
+    public List<GameObject> rangedTargets;
     int[] iter = new int[2];
-    public List<GameObject> scanMelee(Vector3 inCord)
-    {
-        iter[0] = (int)inCord.x - 1;
-        iter[1] = (int)inCord.y - 1;
-
-        for(int y = 0; y <= 9; y++)
-        {
-            for(int x = 0; x <= 3; x++)
-            {
-                if(iter[0] + x != inCord.x && iter[1] + y != inCord.y)
-                {
-                    if (scanHand.GetGameObject(iter[0] + x, iter[1] + y) != null) meleeTargets.Add(scanHand.GetGameObject(iter[0] + x, iter[1] + y));
-                }
-            }
-        }
-        return meleeTargets;
+    private void Start() {
+        meleeTargets = new List<GameObject>();
+        rangedTargets = new List<GameObject>();
+        scanHand = GameObject.Find("GameHandler").GetComponent<GameHandler>();
     }
-    public List<GameObject> scanRanged(Vector3 inCord)
+    public void scanMelee()
     {
-        int iterX;
-        int iterY;
-        for(int dir = 0; dir < 9; dir++)
-        {
-            switch (dir)
-            {
-                case 0:
-                    iterX = 0;
-                    iterY = 1;
-                    break;
-                case 1:
-                    iterX = 1;
-                    iterY = 0;
-                    break;
-                case 2:
-                    iterX = 0;
-                    iterY = -1;
-                    break;
-                case 3:
-                    iterX = -1;
-                    iterY = 0;
-                    break;
-                case 4:
-                    iterX = 1;
-                    iterY = 1;
-                    break;
-                case 5:
-                    iterX = -1;
-                    iterY = -1;
-                    break;
-                case 6:
-                    iterX = -1;
-                    iterY = 1;
-                    break;
-                case 7:
-                    iterX = 1;
-                    iterY = -1;
-                    break;
+        GameObject enemy = scanHand.GetGameObject((int)this.transform.position.x+1, (int)this.transform.position.y);
+        if (enemy != null){
+            if (enemy.GetComponent<Enemy>() != null){
+                meleeTargets.Add(enemy);
+            }
+            if (enemy.GetComponent<Barrel>() != null){
+                meleeTargets.Add(enemy);
             }
         }
-        return rangedTargets;
+        enemy = scanHand.GetGameObject((int)this.transform.position.x-1, (int)this.transform.position.y);
+        if (enemy != null){
+            if (enemy.GetComponent<Enemy>() != null){
+                meleeTargets.Add(enemy);
+            }
+            if (enemy.GetComponent<Barrel>() != null){
+                meleeTargets.Add(enemy);
+            }
+        }
+        enemy = scanHand.GetGameObject((int)this.transform.position.x, (int)this.transform.position.y+1);
+        if (enemy != null){
+            if (enemy.GetComponent<Enemy>() != null){
+                meleeTargets.Add(enemy);
+            }
+            if (enemy.GetComponent<Barrel>() != null){
+                meleeTargets.Add(enemy);
+            }
+        }
+        enemy = scanHand.GetGameObject((int)this.transform.position.x, (int)this.transform.position.y-1);
+        if (enemy != null){
+            if (enemy.GetComponent<Enemy>() != null){
+                meleeTargets.Add(enemy);
+            }
+            if (enemy.GetComponent<Barrel>() != null){
+                meleeTargets.Add(enemy);
+            }
+        }
+
+    }
+    public void scanRanged()
+    {
+        //rangedTargets = new List<GameObject>();
+        // int iterX;
+        // int iterY;
+        // for(int dir = 0; dir < 9; dir++)
+        // {
+        //     switch (dir)
+        //     {
+        //         case 0:
+        //             iterX = 0;
+        //             iterY = 1;
+        //             break;
+        //         case 1:
+        //             iterX = 1;
+        //             iterY = 0;
+        //             break;
+        //         case 2:
+        //             iterX = 0;
+        //             iterY = -1;
+        //             break;
+        //         case 3:
+        //             iterX = -1;
+        //             iterY = 0;
+        //             break;
+        //         case 4:
+        //             iterX = 1;
+        //             iterY = 1;
+        //             break;
+        //         case 5:
+        //             iterX = -1;
+        //             iterY = -1;
+        //             break;
+        //         case 6:
+        //             iterX = -1;
+        //             iterY = 1;
+        //             break;
+        //         case 7:
+        //             iterX = 1;
+        //             iterY = -1;
+        //             break;
+        //     }
+        // }
+        //return rangedTargets;
     }
     public void scanRangeIterator(int iterX,int iterY, Vector3 inCord)
     {

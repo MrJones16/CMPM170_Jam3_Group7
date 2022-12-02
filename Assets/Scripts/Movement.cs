@@ -66,7 +66,7 @@ public class Movement : MonoBehaviour
         if (groundTile != null){
             if (groundTile.colliderType != Tile.ColliderType.None){
                 //if there is any kind of collider on the tile, return false / cant move
-                Debug.Log("Ground tile collider in the way! collidertype: " + groundTile.colliderType);
+                //Debug.Log("Ground tile collider in the way! collidertype: " + groundTile.colliderType);
                 return false;
             }
         }
@@ -76,7 +76,7 @@ public class Movement : MonoBehaviour
         if (surfaceTile != null){
             if (surfaceTile.colliderType != Tile.ColliderType.None){
                 //if there is any kind of collider on the tile, return false / cant move
-                Debug.Log("Surface tile in the way!  collidertype: " + surfaceTile.colliderType);
+                //Debug.Log("Surface tile in the way!  collidertype: " + surfaceTile.colliderType);
                 return false;
             }
         }
@@ -85,5 +85,130 @@ public class Movement : MonoBehaviour
         this.transform.position += new Vector3(xdir, ydir, 0);
         return true;
     }
+
+    public void pathfindAndMoveOnce(Vector2Int targetPosition){
+        Vector2Int startPosition = new Vector2Int((int)this.transform.position.x, (int)this.transform.position.y);
+        //make a list of open and closed nodes
+        List<Node> openList = new List<Node>();
+        List<Node> closedList = new List<Node>();
+        Node startNode = new Node(startPosition.x, startPosition.y);
+        startNode.gCost = 0;
+        startNode.hCost = Mathf.Sqrt(Mathf.Pow((targetPosition.x - startPosition.x), 2) + Mathf.Pow((targetPosition.y - startPosition.y), 2));
+        startNode.fCost = 0 + startNode.hCost;
+        openList.Add(startNode);
+        Node currNode = null;
+        bool success = false;
+
+        while (openList.Count > 0){
+            
+            //get the current node
+            float minCost = float.MaxValue;
+            foreach (Node node in openList){
+                if (node.fCost < minCost){
+                    currNode = node;
+                    minCost = node.fCost;
+                }
+            }
+            if (currNode == null) break;
+            //Debug.Log("Node Loop Call at ( " + currNode.posX + " , " + currNode.posY + " )");
+            //Debug.Log("fCost = " + currNode.fCost);
+            closedList.Add(currNode);
+            openList.Remove(currNode);
+            
+            //check if node is the end target
+            if (currNode.posX == targetPosition.x && currNode.posY == targetPosition.y){
+                success = true;
+                //Debug.Log("Pathfinding Successfull");
+                break;
+            }
+            //create a list of neighbors
+            List<Vector2Int> neighbors = new List<Vector2Int>();
+            neighbors.Add(new Vector2Int(currNode.posX+1, currNode.posY));
+            neighbors.Add(new Vector2Int(currNode.posX-1, currNode.posY));
+            neighbors.Add(new Vector2Int(currNode.posX, currNode.posY+1));
+            neighbors.Add(new Vector2Int(currNode.posX, currNode.posY-1));
+            //do stuff for each neighbor
+            foreach (Vector2Int neighbor in neighbors){
+                //get the tile data
+                Tile groundTile = ground.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(neighbor.x, neighbor.y, 0));
+                Tile surfaceTile = surface.GetTile<UnityEngine.Tilemaps.Tile>(new Vector3Int(neighbor.x, neighbor.y, 0));
+                //check if the tiles are walkable, and if not then go to next neighbor
+                if (groundTile == null) continue;
+                if (groundTile.colliderType != Tile.ColliderType.None) continue;
+                if (surfaceTile != null){
+                    if (surfaceTile.colliderType != Tile.ColliderType.None) continue;
+                }
+                if (!(neighbor.x == targetPosition.x && neighbor.y == targetPosition.y)){
+                    if (gameHandler.GetGameObject(neighbor.x, neighbor.y) != null) continue;
+                }
+                //now check if the neighbor is in the closed list
+                bool foundInList = false;
+                foreach (Node n in closedList){
+                    if (n.posX == neighbor.x && n.posY == neighbor.y) foundInList = true;
+                }
+                if (foundInList) continue;
+
+                //check if the position is in the open list already
+                foundInList = false;
+                foreach (Node n in openList){
+                    if (n.posX == neighbor.x && n.posY == neighbor.y) {
+                        //found it in the list
+
+                        //update the g cost if it is shorter
+                        if (n.gCost > currNode.gCost + 1){
+                            n.gCost = currNode.gCost + 1;
+                            n.fCost = n.gCost + n.hCost;
+                            n.parent = currNode;
+                        }
+                        foundInList = true;
+                    }
+                }
+                if (foundInList)continue;
+                //not in the list
+                Node newNode = new Node(neighbor.x, neighbor.y);
+                newNode.hCost = Mathf.Sqrt(Mathf.Pow((targetPosition.x - neighbor.x), 2) + Mathf.Pow((targetPosition.y - neighbor.y), 2));
+                newNode.gCost = currNode.gCost + 1;
+                newNode.fCost = newNode.hCost + newNode.fCost;
+                //Debug.Log("Created neighbor node with fCost of: " + newNode.fCost);
+                newNode.parent = currNode;
+                openList.Add(newNode);
+            }//end neighbor loop
+        }//end while loop
+        if (success){
+            int distance = 0;
+            Node newCurrent = currNode;
+            if (newCurrent.parent != null){
+                while (newCurrent.parent.parent != null){
+                    distance++;
+                    newCurrent = newCurrent.parent;
+                }
+            }
+            //Debug.Log("Distance = " + distance);
+
+            //now, FINALLY, we move to the closest node on the path
+            if (newCurrent.posX > startPosition.x)      {MoveRight();}
+            else if (newCurrent.posX < startPosition.x) {MoveLeft();}
+            else if (newCurrent.posY > startPosition.y) {MoveUp();}
+            else if (newCurrent.posY < startPosition.y) {MoveDown();}
+        }
+
+    }
     
+}
+
+public class Node{
+    public int posX;
+    public int posY;
+    public float gCost;
+    public float hCost;
+    public float fCost;
+    public Node parent;
+    public Node(int x, int y){
+        posX = x;
+        posY = y;
+        gCost = 0;
+        hCost = 0;
+        fCost = 0;
+        parent = null;
+    }
 }

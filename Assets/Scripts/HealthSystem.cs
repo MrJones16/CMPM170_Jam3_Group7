@@ -13,11 +13,13 @@ public class HealthSystem : MonoBehaviour
 
     public GameObject reduceHP;
     public GameObject applyHP;
+    GameHandler gameHandler;
  
  
     private void Start()
     {
         currentHealth = maxHealth;
+        gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
     }
  
  
@@ -46,7 +48,7 @@ public class HealthSystem : MonoBehaviour
             if(value >= 0 && currentHealth == maxHealth){
                 return;
             }
-
+            Debug.Log("Editing current health by " + value);
             currentHealth += value;
         }
 
@@ -57,8 +59,13 @@ public class HealthSystem : MonoBehaviour
 
         // if current health <= 0 after damage health, restart the game
         if(currentHealth <= 0){
-            Scene scene = SceneManager.GetActiveScene(); 
-            SceneManager.LoadScene(scene.name);
+            if (this.gameObject.GetComponent<PlayerScript>() != null){
+                gameHandler.GameOver();
+            }else{
+                gameHandler.gameObjects.Remove(this.gameObject);
+                //gameHandler.player.playerScan.meleeTargets.Remove(this.gameObject);
+                Destroy(this.gameObject);
+            }
 
         }
     }

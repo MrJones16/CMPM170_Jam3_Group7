@@ -23,6 +23,7 @@ public class Enemy : MonoBehaviour
 {
     Movement movement;
     GameHandler gameHandler;
+    public GameObject damagePrefab;
     //want a health script
     public string enemyType = "Melee";
     public int damage = 5;
@@ -35,49 +36,90 @@ public class Enemy : MonoBehaviour
         gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
     }
     public void TakeTurn(){
+        StartCoroutine(TakeTimedTurn());
+    }
+    public IEnumerator TakeTimedTurn(){
         //get the player game object, this can be changed to find a script instead of a name.
-        GameObject target;
+        GameObject target = null;
         foreach(GameObject item in gameHandler.gameObjects){
             if (item.name == "Player"){
+                //Debug.Log("Found the player!");
                 target = item;
                 break;
             }
         }
+        if (target == null) yield break;
+        //Debug.Log("Target exists, doing stuff!");
+        float distanceToPlayer = Mathf.Sqrt(Mathf.Pow((target.transform.position.x - this.transform.position.x), 2)
+        + Mathf.Pow((target.transform.position.y - this.transform.position.y), 2));
+        int actioncount = actions;
+
         switch(enemyType){
             case "Melee":
-                
+                //move / attack loop
+                while (actioncount > 0){
+                    if (distanceToPlayer < 1.2){
+                        // Debug.Log("Player in Range, attacking!");
+                        //ATTACK
+                        actioncount = 0;
+                        GameObject damageIndication = Instantiate(damagePrefab, target.transform.position + new Vector3(0,1,-2), this.transform.rotation);
+                        StartCoroutine(destroyAfterSecond(damageIndication));
+                        target.GetComponent<HealthSystem>().ChangeHealth(-damage);
+                        break;
+                    }
+                    //Debug.Log("Calling the Coroutine");
+                    //MOVE
+                    movement.pathfindAndMoveOnce(new Vector2Int((int)target.transform.position.x, (int)target.transform.position.y));
+                    yield return new WaitForSeconds(0.5f);
+                    distanceToPlayer = Mathf.Sqrt(Mathf.Pow((target.transform.position.x - this.transform.position.x), 2)
+                    + Mathf.Pow((target.transform.position.y - this.transform.position.y), 2));
+                    actioncount--;
+                }
                 break;
             case "Ranger":
                 break;
             case "Mage":
                 break;
             default:
-                Debug.Log("Didn't specify an enemy type! Types: Melee, Ranger, Mage");
+                //Debug.Log("Didn't specify an enemy type! Types: Melee, Ranger, Mage");
                 break;
         }
     }
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.A)){
-            if(movement.MoveLeft()){
-
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.S)){
-            if(movement.MoveDown()){
-
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.D)){
-            if(movement.MoveRight()){
-
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.W)){
-            if(movement.MoveUp()){
-
-            }
-        }
-
-
+    IEnumerator destroyAfterSecond(GameObject item){
+        yield  return new WaitForSeconds(1);
+        Destroy(item);
     }
+    IEnumerator moveTowardsPlayer(Vector2Int targetPosition){
+        
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    // private void Update() {
+    //     if (Input.GetKeyDown(KeyCode.A)){
+    //         if(movement.MoveLeft()){
+
+    //         }
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.S)){
+    //         if(movement.MoveDown()){
+
+    //         }
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.D)){
+    //         if(movement.MoveRight()){
+
+    //         }
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.W)){
+    //         if(movement.MoveUp()){
+
+    //         }
+    //     }
+    //     if (Input.GetKeyDown(KeyCode.UpArrow)){
+    //         //Debug.Log("Enemy Taking Turn!");
+    //         StartCoroutine(TakeTimedTurn());
+    //     }
+
+
+    // }
 }
