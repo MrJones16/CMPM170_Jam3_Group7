@@ -21,11 +21,15 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     public HealthSystem playerHealth = new HealthSystem();
+    public scanning playScan;
     public Movement playerMove;
     public bool PlayerTurn = false;
     public bool tempBool;
     public const int actionMax = 5;
     public int actionsLeft = 5;
+    public scanning playerScan;
+    public List<GameObject> meleeTragets; 
+    public List<GameObject> rangedTragets;
     // Update is called once per frame
 
     //call PlayerScript.takeTurn() to have the player take their turn
@@ -41,23 +45,42 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.W))
             {
-                tempBool = playerMove.MoveUp(transform.position);
-                if(tempBool) actionsLeft--;
+                tempBool = playerMove.MoveUp();
+                if (tempBool) 
+                {
+                    meleeTragets = playerScan.scanMelee(this.transform.position);
+                    rangedTragets = playerScan.scanRanged(this.transform.position);
+                    actionsLeft--; 
+                }
             }
             if (Input.GetKeyDown(KeyCode.A))
             {
-                tempBool = playerMove.MoveLeft(transform.position);
-                if (tempBool) actionsLeft--; 
+                tempBool = playerMove.MoveLeft();
+                if (tempBool)
+                {
+                    meleeTragets = playerScan.scanMelee(this.transform.position);
+                    rangedTragets = playerScan.scanRanged(this.transform.position);
+                    actionsLeft--;
+                }
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
-                tempBool = playerMove.MoveRight(transform.position);
-                if (tempBool) actionsLeft--;
+                tempBool = playerMove.MoveRight();
+                if (tempBool) {
+                    meleeTragets = playerScan.scanMelee(this.transform.position);
+                    rangedTragets = playerScan.scanRanged(this.transform.position);
+                    actionsLeft--;
+                } 
             }
             if (Input.GetKeyDown(KeyCode.S))
             {
-                tempBool = playerMove.MoveDown(transform.position);
-                if (tempBool) actionsLeft--;
+                tempBool = playerMove.MoveDown();
+                if (tempBool)
+                {
+                    meleeTragets = playerScan.scanMelee(this.transform.position);
+                    rangedTragets = playerScan.scanRanged(this.transform.position);
+                    actionsLeft--;
+                }
             }
             if (Input.GetKeyDown(KeyCode.Escape)) break;
         }
