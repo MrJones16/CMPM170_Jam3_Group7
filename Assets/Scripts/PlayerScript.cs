@@ -35,6 +35,7 @@ public class PlayerScript : MonoBehaviour
     public GameObject damagePrefab;
     public GameObject brokenBarrel;
     Interaction interaction;
+    public AudioSource attackSource;
     // Update is called once per frame
 
     //call PlayerScript.takeTurn() to have the player take their turn
@@ -42,7 +43,7 @@ public class PlayerScript : MonoBehaviour
     {
         meleeTragets = new List<GameObject>();
         rangedTragets = new List<GameObject>();
-        playerHealth.maxHealth = 20;
+        playerHealth.maxHealth = 5;
         gameHandler = GameObject.Find("GameHandler").GetComponent<GameHandler>();
         actionsLeft = actionMax;
         playerScan = this.GetComponent<scanning>();
@@ -94,26 +95,42 @@ public class PlayerScript : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.F)){
                 bool didDamage = false;
+                bool spoke = false;
                 playerScan.scanMelee();
                 //Attack all enemies in the melee range
                 foreach (GameObject enemy in playerScan.meleeTargets){
-                    if (enemy.GetComponent<Enemy>() != null){
-                        GameObject damageIndication = Instantiate(damagePrefab, enemy.transform.position + new Vector3(0,1,-2), this.transform.rotation);
-                        StartCoroutine(destroyAfterSecond(damageIndication));
-                        enemy.GetComponent<HealthSystem>().ChangeHealth(-damage);
-                        didDamage = true;
-                    }else if (enemy.GetComponent<Barrel>() != null){
-                        GameObject damageIndication = Instantiate(damagePrefab, enemy.transform.position + new Vector3(0,1,-2), this.transform.rotation);
-                        StartCoroutine(destroyAfterSecond(damageIndication));
-                        interaction.updateDialoge(enemy.GetComponent<Barrel>().BarrelChoice);
-                        Vector3 barrelPosition = enemy.transform.position;
-                        enemy.GetComponent<HealthSystem>().ChangeHealth(-damage);
-                        Instantiate(brokenBarrel, barrelPosition, this.transform.rotation);
-                        didDamage = true;
+                    if (enemy.gameObject.tag == "NPC"){
+                        interaction.EnableUI();
+                        actionsLeft = 0;
+
+                        break;
+                    }
+                }
+                if (!spoke){
+                    foreach (GameObject enemy in playerScan.meleeTargets){
+                        if (enemy.GetComponent<Enemy>() != null){
+                            GameObject damageIndication = Instantiate(damagePrefab, enemy.transform.position + new Vector3(0,1,-2), this.transform.rotation);
+                            StartCoroutine(destroyAfterSecond(damageIndication));
+                            enemy.GetComponent<HealthSystem>().ChangeHealth(-damage);
+                            didDamage = true;
+
+                        }else if (enemy.GetComponent<Barrel>() != null){
+                            GameObject damageIndication = Instantiate(damagePrefab, enemy.transform.position + new Vector3(0,1,-2), this.transform.rotation);
+                            StartCoroutine(destroyAfterSecond(damageIndication));
+                            interaction.updateDialoge(enemy.GetComponent<Barrel>().BarrelChoice);
+                            Vector3 barrelPosition = enemy.transform.position;
+                            enemy.GetComponent<HealthSystem>().ChangeHealth(-damage);
+                            Instantiate(brokenBarrel, barrelPosition, this.transform.rotation);
+                            didDamage = true;
+                        }
+
                     }
                 }
                 playerScan.meleeTargets.Clear();
-                if (didDamage)actionsLeft = 0;
+                if (didDamage){
+                    attackSource.Play();
+                    actionsLeft = 0;
+                }
             }
             if (Input.GetKeyDown(KeyCode.Escape)) actionsLeft = 0;
         }

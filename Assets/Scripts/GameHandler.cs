@@ -9,8 +9,8 @@ public class GameHandler : MonoBehaviour
 {
     public List<GameObject> gameObjects;
     public PlayerScript player;
-    public Text turnText;
-    public Text GameOverText;
+    public Image slimeTurn;
+    public Image GameOverImage;
     bool playersTurn;
     bool enemyTurns = false;
     bool isGameOver = false;
@@ -32,7 +32,7 @@ public class GameHandler : MonoBehaviour
     }
     private void Start() {
         playersTurn = true;
-        GameOverText.enabled = false;
+        GameOverImage.enabled = false;
     }
     private void Update() {
         if (isGameOver){
@@ -44,12 +44,12 @@ public class GameHandler : MonoBehaviour
         }
         if (playersTurn){
             player.PlayerTurn = true;
-            turnText.text = "Player's Turn";
+            slimeTurn.enabled = false;
             enemyTurns = false;
         }else{
             if (enemyTurns == false){
                 enemyTurns = true;
-                turnText.text = "Enemies' Turn";
+                slimeTurn.enabled = true;
                 //get all the enemies
                 foreach (GameObject item in gameObjects){
                     Enemy enemy = item.GetComponent<Enemy>();
@@ -65,7 +65,7 @@ public class GameHandler : MonoBehaviour
     }
     public void GameOver(){
         Debug.Log("Game Over!");
-        GameOverText.enabled = true;
+        GameOverImage.enabled = true;
         isGameOver = true;
     }
     public IEnumerator endPlayersTurn (){
@@ -75,7 +75,7 @@ public class GameHandler : MonoBehaviour
         player.actionsLeft = player.actionMax;
     }
     public IEnumerator endEnemiesTurns(){
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2.2f);
         playersTurn = true;
     }
 

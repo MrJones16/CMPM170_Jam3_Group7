@@ -41,17 +41,26 @@ public class Interaction : MonoBehaviour
                 break;
         }
     }
-    public void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.tag == "NPC")
-        {
-            UI.SetActive(true);
-            updateDialoge(choice);
-        }
+    public void EnableUI(){
+        UI.SetActive(true);
+        updateDialoge(choice);
+        StartCoroutine(closeUI());
     }
-    public void OnCollisionExit2D(Collision2D other)
-    {
+    IEnumerator closeUI(){
+        yield return new WaitForSeconds(4);
         UI.SetActive(false);
     }
+    // public void OnCollisionEnter2D(Collision2D other)
+    // {
+    //     if (other.gameObject.tag == "NPC")
+    //     {
+    //         UI.SetActive(true);
+    //         updateDialoge(choice);
+    //     }
+    // }
+    // public void OnCollisionExit2D(Collision2D other)
+    // {
+    //     UI.SetActive(false);
+    // }
 
 }

@@ -14,6 +14,8 @@ public class HealthSystem : MonoBehaviour
     public GameObject reduceHP;
     public GameObject applyHP;
     GameHandler gameHandler;
+    public GameObject HealthBar;
+    public GameObject HealthBarScaler;
  
  
     private void Start()
@@ -56,14 +58,16 @@ public class HealthSystem : MonoBehaviour
         if(currentHealth > maxHealth){
             currentHealth = maxHealth;
         }
+        HealthBarScaler.transform.localScale = new Vector3(currentHealth / maxHealth,1,1);
 
-        // if current health <= 0 after damage health, restart the game
+        // if current health <= 0 after damage health, kill enemy or say game over
         if(currentHealth <= 0){
             if (this.gameObject.GetComponent<PlayerScript>() != null){
                 gameHandler.GameOver();
             }else{
                 gameHandler.gameObjects.Remove(this.gameObject);
                 //gameHandler.player.playerScan.meleeTargets.Remove(this.gameObject);
+                Destroy(HealthBar);
                 Destroy(this.gameObject);
             }
 

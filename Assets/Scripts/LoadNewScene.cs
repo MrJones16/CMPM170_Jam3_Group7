@@ -5,6 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class LoadNewScene : MonoBehaviour
 {
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.F)){
+            loadLevel();
+        }
+    }
     public void loadLevel(){
         SceneManager.LoadScene("SampleScene");
     }

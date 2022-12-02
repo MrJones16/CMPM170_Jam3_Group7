@@ -26,6 +26,9 @@ public class scanning : MonoBehaviour
             if (enemy.GetComponent<Barrel>() != null){
                 meleeTargets.Add(enemy);
             }
+            if (enemy.gameObject.tag == "NPC"){
+                meleeTargets.Add(enemy);
+            }
         }
         enemy = scanHand.GetGameObject((int)this.transform.position.x-1, (int)this.transform.position.y);
         if (enemy != null){
@@ -33,6 +36,9 @@ public class scanning : MonoBehaviour
                 meleeTargets.Add(enemy);
             }
             if (enemy.GetComponent<Barrel>() != null){
+                meleeTargets.Add(enemy);
+            }
+            if (enemy.gameObject.tag == "NPC"){
                 meleeTargets.Add(enemy);
             }
         }
@@ -44,6 +50,9 @@ public class scanning : MonoBehaviour
             if (enemy.GetComponent<Barrel>() != null){
                 meleeTargets.Add(enemy);
             }
+            if (enemy.gameObject.tag == "NPC"){
+                meleeTargets.Add(enemy);
+            }
         }
         enemy = scanHand.GetGameObject((int)this.transform.position.x, (int)this.transform.position.y-1);
         if (enemy != null){
@@ -51,6 +60,9 @@ public class scanning : MonoBehaviour
                 meleeTargets.Add(enemy);
             }
             if (enemy.GetComponent<Barrel>() != null){
+                meleeTargets.Add(enemy);
+            }
+            if (enemy.gameObject.tag == "NPC"){
                 meleeTargets.Add(enemy);
             }
         }
